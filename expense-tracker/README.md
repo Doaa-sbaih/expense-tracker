@@ -73,16 +73,16 @@ http://localhost:3000/api/expenses
 ## Screenshots
 
 ### Main Dashboard
-![Main Dashboard](screenshoot/UI/home.png)
+![Main Dashboard](screenshoot/home.png)
 
 ### Add Expense
-![Add Expense](screenshoot/UI/add-expense.png)
+![Add Expense](screenshoot/add-expense.png)
 
 ### Edit Expense
-![Edit Expense](screenshoot/UI/edit-expense.png)
+![Edit Expense](screenshoot/edit-expense.png)
 
 ### Mobile View
-![Mobile View](screenshoot/UI/mobile.png)
+![Mobile View](screenshoot/mobile.png)
 
 ## What was the hardest part?
 
