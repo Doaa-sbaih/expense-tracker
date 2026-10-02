@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Expense Tracker</title>
+
+    <!-- Bootstrap CSS -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <span class="navbar-brand mb-0">
+                Expense Tracker
+            </span>
+                    
+            <button id="darkModeBtn" class="btn btn-light">
+            <i class="fa-solid fa-moon"></i>
+            <i class="fa-solid fa-sun"></i>
+            </button>
+        </div>
+    </nav>
+
+
+
+<!-- Alert Modal -->
+<div class="modal fade" id="alertModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="alertModalTitle">
+                    Message
+                </h5>
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal">
+                </button>
+            </div>
+
+            <div class="modal-body" id="alertModalBody">
+                Message
+            </div>
+
+            <div class="modal-footer">
+                <button
+                    type="button"
+                    class="btn btn-primary"
+                    data-bs-dismiss="modal">
+                    OK
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+    <!-- Spinner -->
+    <div id="spinner" class="text-center d-none">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+
+   <!-- Summary Cards -->
+<div class="container my-5">
+
+    <div class="summary-grid">
+
+        <!-- Total -->
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+
+                <h5 class="card-title">
+                    Total
+                </h5>
+
+                <p class="card-text mb-0" id="ex-total"></p>
+
+            </div>
+        </div>
+
+
+        <!-- Number of Expenses -->
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+
+                <h5 class="card-title">
+                    Number of Expenses
+                </h5>
+
+                <p class="card-text mb-0" id="ex-num"></p>
+
+            </div>
+        </div>
+
+
+        <!-- Highest Expense -->
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+
+                <h5 class="card-title">
+                    Highest Expense
+                </h5>
+
+                <p class="card-text mb-0" id="ex-highest"></p>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Expenses Chart -->
+<div class="container my-5">
+
+    <div class="row g-4">
+
+        <!-- Category Chart -->
+        <div class="col-md-4">
+
+            <div class="card shadow-sm h-100">
+
+                <div class="card-body">
+
+                    <h5 class="card-title text-center">
+                        Expenses by Category
+                    </h5>
+
+                    <div class="mx-auto" style="max-width: 300px;">
+                        <canvas id="expenseChart"></canvas>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Monthly Expenses -->
+        <div class="col-md-4">
+
+            <div class="card shadow-sm h-100">
+
+                <div class="card-body">
+
+                    <h5 class="card-title text-center mb-4">
+                        Monthly Expenses
+                    </h5>
+
+                    <div id="monthlyExpenses">
+                        <!-- Monthly expenses will appear here -->
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Monthly Budget -->
+        <div class="col-md-4">
+
+            <div class="card shadow-sm h-100">
+
+                <div class="card-body">
+
+                    <h5 class="card-title text-center mb-4">
+                        Monthly Budget
+                    </h5>
+
+                    <h3 class="text-center">
+                        $500
+                    </h3>
+
+                    <div class="mt-4">
+
+                        <div class="d-flex justify-content-between">
+                            <span>Spent</span>
+                            <strong id="budgetSpent">$0</strong>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-2">
+                            <span>Remaining</span>
+                            <strong id="budgetRemaining">$500</strong>
+                        </div>
+
+                    </div>
+
+                    <div class="progress mt-4">
+
+                        <div
+                            id="budgetProgress"
+                            class="progress-bar"
+                            role="progressbar"
+                            style="width: 0%"
+                        >
+                            0%
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+    <!-- Add Expense -->
+    <div class="container my-4">
+
+        <h4 class="mb-3">
+            Add Expense
+        </h4>
+
+        <form
+            id="expenseForm"
+            class="p-4 rounded shadow-sm"
+            novalidate
+        >
+
+            <div class="row g-3 align-items-end">
+
+                <!-- Title -->
+                <div class="col-md-2">
+                    <label
+                        for="title"
+                        class="form-label"
+                    >
+                        Title
+                    </label>
+
+                    <input
+                        type="text"
+                        class="form-control"
+                        name="title"
+                        id="title"
+                        required
+                    >
+                </div>
+
+
+                <!-- Amount -->
+                <div class="col-md-2">
+                    <label
+                        for="amount"
+                        class="form-label"
+                    >
+                        Amount
+                    </label>
+
+                    <input
+                        type="number"
+                        class="form-control"
+                        name="amount"
+                        id="amount"
+                        step="any"
+                        min="0.01"
+                        required
+                    >
+                </div>
+
+
+                <!-- Category -->
+                <div class="col-md-2">
+                    <label
+                        for="category"
+                        class="form-label"
+                    >
+                        Category
+                    </label>
+
+                    <select
+                        class="form-select"
+                        name="category"
+                        id="category"
+                    >
+                        <option value="Food">
+                            Food
+                        </option>
+
+                        <option value="Transport">
+                            Transport
+                        </option>
+
+                        <option value="Bills">
+                            Bills
+                        </option>
+
+                        <option value="Entertainment">
+                            Entertainment
+                        </option>
+
+                        <option value="Other">
+                            Other
+                        </option>
+                    </select>
+                </div>
+
+
+                <!-- Date -->
+                <div class="col-md-2">
+                    <label
+                        for="date"
+                        class="form-label"
+                    >
+                        Date
+                    </label>
+
+                    <input
+                        type="date"
+                        class="form-control"
+                        name="date"
+                        id="date"
+                        required
+                    >
+                </div>
+
+
+                <!-- Add Button -->
+                <div class="col-md-2">
+                    <button
+                        type="submit"
+                        class="btn btn-primary w-100"
+                        id="addBtn"
+                    >
+                        Add
+                    </button>
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+    <!-- Filter -->
+    <div class="container my-4">
+        <div class="row" id="s">
+
+        <div class="col-md-3">
+        <label
+            for="categoryFilter"
+            class="form-label fw-semibold"
+        >
+            Filter by Category
+        </label>
+
+        <select
+            id="categoryFilter"
+            class="form-select"
+        >
+
+            <option value="All">
+                All Categories
+            </option>
+
+            <option value="Food">
+                Food
+            </option>
+
+            <option value="Transport">
+                Transport
+            </option>
+
+            <option value="Bills">
+                Bills
+            </option>
+
+            <option value="Entertainment">
+                Entertainment
+            </option>
+
+            <option value="Other">
+                Other
+            </option>
+
+        </select>
+    </div>  
+
+    <div class="col-md-3">
+        <label for="monthFilter" class="form-label fw-semibold">
+        Filter by Month
+        </label>
+        <input type="month" id="monthFilter" class="form-control">
+    </div>
+    <div class="col-md-2">
+        <br>
+        <button
+            type="button"
+            id="clearFilter"
+            class="btn btn-secondary mt-2">
+            Clear Filter
+        </button>
+   </div>
+    <div class="col-md-4">
+        <label for="categoryFilter" class="form-label fw-semibold">
+            Search
+        </label>
+        <i class="bi bi-search"></i>
+<div class="input-group">
+    <span class="input-group-text">
+        <i class="fa-solid fa-magnifying-glass"></i>
+    </span>
+
+    <input type="text"
+           id="searchInput"
+           class="form-control"
+           placeholder="Search here">
+</div>    </div>
+
+    
+</div>
+</div>
+
+<div class="container my-4">
+
+    <button
+        type="button"
+        class="btn btn-success"
+        onclick="exportCSV()">
+        Export CSV
+    </button>
+
+</div>
+
+
+    <!-- Expenses Table -->
+    <div class="container my-4">
+
+        <div class="table-responsive shadow-sm">
+
+            <table class="table table-striped table-hover align-middle">
+
+                <thead class="table-dark">
+
+                    <tr>
+                        <th>#</th>
+                        <th onclick="sortTitle()">Title</th>
+                        <th onclick="sortAmount()">Amount</th>
+                        <th onclick="sortCategory()">Category</th>
+                        <th onclick="sortDate()">Date</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    </tr>
+
+                </thead>
+
+                <tbody id="table">
+                    <!-- Expenses will be added by JavaScript -->
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <!-- Edit Modal -->
+    <div
+        class="modal fade"
+        id="editModal"
+        tabindex="-1"
+        aria-labelledby="editModalLabel"
+        aria-hidden="true"
+    >
+
+        <div class="modal-dialog">
+
+            <div class="modal-content">
+
+                <div class="modal-header">
+
+                    <h5
+                        class="modal-title"
+                        id="editModalLabel"
+                    >
+                        Edit Expense
+                    </h5>
+
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                    ></button>
+
+                </div>
+
+
+                <div
+                    class="modal-body"
+                    id="modal-body"
+                >
+                    <!-- Edit form will be added by JavaScript -->
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Delete Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title">
+                    Confirm Delete
+                </h5>
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <div class="modal-body">
+                Are you sure you want to delete this expense?
+            </div>
+
+            <div class="modal-footer">
+
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal">
+                    Cancel
+                </button>
+
+                <button
+                    type="button"
+                    class="btn btn-danger"
+                    id="deleteConfirmBtn">
+                    Delete
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+    <footer class="mt-5 py-4 border-top">
+    <div class="container text-center">
+
+<!-- Footer -->
+    <h6 class="mb-2">
+        Expense Tracker
+    </h6>
+
+    <p class="mb-2">
+        Track your expenses. Manage your money. Stay organized.
+    </p>
+
+    <small>
+        © 2026 Expense Tracker. All rights reserved.
+    </small>
+
+</div>
+
+
+</footer>
+
+
+    <!-- Bootstrap JS -->
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="js/app.js"></script>
+    
+
+</body>
+
+</html>
