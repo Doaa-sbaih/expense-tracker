@@ -70,6 +70,10 @@ http://localhost:3000/api/expenses
 * [x] REST API using Express
 * [x] CRUD operations using `fetch` and `async/await`
 
+## Demo Video
+
+[Watch the Project Demo](https://drive.google.com/file/d/1rIdStWbvLL7Sa4GWWkSsCYnlTOGnSpwx/view?usp=sharing)
+
 ## Screenshots
 
 ### Main Dashboard
